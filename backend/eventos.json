@@ -1,0 +1,35 @@
+[
+  {
+    "id": "ev_64d0eac6a3f1b_001",
+    "titulo": "Minga de limpieza",
+    "categoria": "Minga",
+    "fecha": "15/08/2025",
+    "hora_inicio": "08:00 AM",
+    "hora_fin": "12:00 PM",
+    "lugar": "Playa San Lorenzo",
+    "descripcion": "Limpieza y clasificación de residuos en la playa.",
+    "creado_en": "2025-08-09T12:59:00+00:00"
+  },
+  {
+    "id": "ev_64d0eac6a3f1b_002",
+    "titulo": "Siembra de árboles nativos",
+    "categoria": "Reforestación",
+    "fecha": "20/08/2025",
+    "hora_inicio": "09:00 AM",
+    "hora_fin": "11:30 AM",
+    "lugar": "Parque Central",
+    "descripcion": "Jornada comunitaria para sembrar especies nativas en áreas verdes.",
+    "creado_en": "2025-08-08T09:15:00+00:00"
+  },
+  {
+    "id": "ev_64d0eac6a3f1b_003",
+    "titulo": "Taller de reciclaje creativo",
+    "categoria": "Taller",
+    "fecha": "25/08/2025",
+    "hora_inicio": "02:00 PM",
+    "hora_fin": "04:00 PM",
+    "lugar": "Casa comunal",
+    "descripcion": "Aprende a reutilizar materiales para crear objetos útiles y decorativos.",
+    "creado_en": "2025-08-07T14:40:00+00:00"
+  }
+]

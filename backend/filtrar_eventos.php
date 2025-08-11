@@ -1,17 +1,12 @@
 <?php
 declare(strict_types=1);
 
-/**
- * filtrar_eventos.php
- * Filtra eventos desde eventos.json por categoria, rango de fechas y/o lugar/titulo.
- *
+/*
  * Parámetros (GET):
  *   categoria   -> texto, comparado sin distinción de mayúsculas
  *   desde       -> fecha mínima (dd/mm/YYYY)
  *   hasta       -> fecha máxima (dd/mm/YYYY)
- *   q           -> texto a buscar en lugar o título (contiene, case-insensitive)
- *
- * Respuesta: 200 -> [ {evento}, ... ]
+ *   q           -> texto a buscar en lugar o título 
  */
 
 header('Content-Type: application/json; charset=utf-8');

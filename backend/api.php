@@ -134,13 +134,6 @@ switch ($method) {
       'creado_en'   => date('c'),
     ];
 
-    // (Opcional) Lista blanca de categorías
-    $whitelist = ["Minga","Sembratón","Charla","Taller","Reciclaje","Reforestación","Otro"];
-    if (!in_array($nuevo['categoria'], $whitelist)) {
-      // Si envían algo fuera de catálogo, se permite, o cámbialo a "Otro"
-      // $nuevo['categoria'] = "Otro";
-    }
-
     $items[] = $nuevo;
     if (!saveEventos($file, $items)) {
       http_response_code(500);

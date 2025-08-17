@@ -2,63 +2,153 @@ const API_URL = "http://localhost:8000/api.php?resource=eventos";
 
 // Cargar lista de eventos
 async function cargarEventos() {
-  const res = await fetch(API_URL);
-  const data = await res.json();
-  const contenedor = document.getElementById("eventos");
-  contenedor.innerHTML = "";
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error("No se pudo cargar la lista");
+    const data = await res.json();
+    const contenedor = document.getElementById("eventos");
+    if (!contenedor) return;
+    contenedor.innerHTML = "";
 
-  data.forEach(ev => {
-    const div = document.createElement("div");
-    div.className = "evento";
-    div.innerHTML = `
-      <strong>${ev.titulo}</strong> - ${ev.fecha} en ${ev.lugar}
-      <br>
-      <button class="ver" onclick="verDetalle('${ev.id}')">Ver Detalle</button>
-      <button class="eliminar" onclick="eliminarEvento('${ev.id}')">Eliminar</button>
-    `;
-    contenedor.appendChild(div);
-  });
+    data.forEach((ev) => {
+      const div = document.createElement("div");
+      div.className = "evento";
+      div.innerHTML = `
+        <strong>${ev.titulo}</strong> - ${ev.fecha} en ${ev.lugar}
+        <br>
+        <button class="ver" onclick="verDetalle('${ev.id}')">Ver Detalle</button>
+        <button class="eliminar" onclick="eliminarEvento('${ev.id}')">Eliminar</button>
+      `;
+      contenedor.appendChild(div);
+    });
+  } catch (err) {
+    console.error(err);
+    alert("Error al cargar eventos");
+  }
 }
 
 // Ver detalle de evento
 async function verDetalle(id) {
-  const res = await fetch(`${API_URL}&id=${id}`);
-  if (!res.ok) {
-    alert("Evento no encontrado");
-    return;
+  try {
+    const res = await fetch(`${API_URL}&id=${encodeURIComponent(id)}`);
+    if (!res.ok) {
+      alert("Evento no encontrado");
+      return;
+    }
+    const evento = await res.json();
+
+    document.getElementById("detTitulo").innerText = evento.titulo;
+    document.getElementById("detCategoria").innerText = evento.categoria;
+    document.getElementById("detFecha").innerText = evento.fecha;
+    document.getElementById(
+      "detHora"
+    ).innerText = `${evento.hora_inicio} - ${evento.hora_fin}`;
+    document.getElementById("detLugar").innerText = evento.lugar;
+    document.getElementById("detDescripcion").innerText = evento.descripcion;
+
+    document.getElementById("detalleEvento").style.display = "block";
+  } catch (err) {
+    console.error(err);
+    alert("Error al cargar el detalle");
   }
-  const evento = await res.json();
-
-  document.getElementById("detTitulo").innerText = evento.titulo;
-  document.getElementById("detCategoria").innerText = evento.categoria;
-  document.getElementById("detFecha").innerText = evento.fecha;
-  document.getElementById("detHora").innerText = `${evento.hora_inicio} - ${evento.hora_fin}`;
-  document.getElementById("detLugar").innerText = evento.lugar;
-  document.getElementById("detDescripcion").innerText = evento.descripcion;
-
-  document.getElementById("detalleEvento").style.display = "block";
 }
 
 // Eliminar evento
 async function eliminarEvento(id) {
-  if (!confirm("¿Seguro que deseas eliminar este evento?")) return;
+  try {
+    if (!confirm("¿Seguro que deseas eliminar este evento?")) return;
 
-  const res = await fetch(`${API_URL}&id=${id}`, { method: "DELETE" });
-  const result = await res.json();
+    const res = await fetch(`${API_URL}&id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    });
+    const result = await res.json();
 
-  if (result.ok) {
-    alert("Evento eliminado correctamente");
-    cargarEventos();
-    document.getElementById("detalleEvento").style.display = "none";
-  } else {
-    alert("Error al eliminar: " + (result.error || "desconocido"));
+    if (result.ok) {
+      alert("Evento eliminado correctamente");
+      cargarEventos();
+      document.getElementById("detalleEvento").style.display = "none";
+    } else {
+      alert("Error al eliminar: " + (result.error || "desconocido"));
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error al eliminar el evento");
   }
 }
 
 // Cerrar detalle
 function cerrarDetalle() {
-  document.getElementById("detalleEvento").style.display = "none";
+  const panel = document.getElementById("detalleEvento");
+  if (panel) panel.style.display = "none";
 }
 
+// ----- CREAR EVENTO (POST) -----
+document.addEventListener("DOMContentLoaded", () => {
+  const frm = document.getElementById("frmCrear");
+
+  if (frm) {
+    // Botón Cancelar
+    const btnCancelar = document.getElementById("btnCancelar");
+    if (btnCancelar) {
+      btnCancelar.addEventListener("click", () => {
+        if (history.length > 1) history.back();
+        else window.location.href = "index.html";
+      });
+    }
+
+    // Enviar formulario
+    frm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fd = new FormData(frm);
+      const payload = Object.fromEntries(fd.entries());
+
+      // Validación mínima
+      const req = [
+        "titulo",
+        "categoria",
+        "fecha",
+        "hora_inicio",
+        "hora_fin",
+        "lugar",
+        "descripcion",
+      ];
+      for (const k of req) {
+        if (!payload[k] || String(payload[k]).trim() === "") {
+          alert("Completa todos los campos obligatorios (*)");
+          return;
+        }
+      }
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+
+        const out = document.getElementById("outCrear");
+        if (out) out.textContent = JSON.stringify(data, null, 2);
+
+        if (res.ok && (data.ok || data.evento)) {
+          alert("Evento creado");
+          frm.reset();
+          window.location.href = "index.html"; // volver a la lista
+        } else {
+          alert("Error al crear: " + (data.error || "ver consola"));
+          console.error(data);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error de red al crear el evento");
+      }
+    });
+  } else {
+    // Si NO estamos en create.html, cargar la lista (index.html)
+    if (typeof cargarEventos === "function") cargarEventos();
+  }
+});
 // Inicializar
-cargarEventos();
+// Nota: La inicialización real ocurre dentro de DOMContentLoaded arriba
+// cargarEventos();

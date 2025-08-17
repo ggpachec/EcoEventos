@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>EcoEventos - Crear Evento</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+    <h1>Crear Evento</h1>
+  </header>
+
+  <section id="crear" class="card">
+    <h2>Detalles del evento</h2>
+    <form id="frmCrear">
+      <label>Título* <input type="text" name="titulo" required></label><br>
+      <label>Categoría*
+        <select name="categoria" required>
+          <option value="">Seleccione…</option>
+          <option>Minga</option>
+          <option>Sembratón</option>
+          <option>Charla</option>
+          <option>Taller</option>
+          <option>Reciclaje</option>
+          <option>Reforestación</option>
+          <option>Otro</option>
+        </select>
+      </label><br>
+      <label>Fecha* <input type="text" name="fecha" placeholder="15/08/2025" required></label><br>
+      <label>Hora inicio* <input type="text" name="hora_inicio" placeholder="08:00 AM" required></label><br>
+      <label>Hora fin* <input type="text" name="hora_fin" placeholder="12:00 PM" required></label><br>
+      <label>Lugar* <input type="text" name="lugar" required></label><br>
+      <label>Descripción* <textarea name="descripcion" required></textarea></label><br>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button type="button" id="btnCancelar" class="cerrar">Cancelar</button>
+        <button type="submit" class="ver">Guardar</button>
+      </div>
+    </form>
+
+    <pre id="outCrear"></pre>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

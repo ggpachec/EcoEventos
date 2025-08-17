@@ -14,7 +14,7 @@ h1 {
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button {
@@ -41,7 +41,7 @@ button {
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   display: none;
 }
 
@@ -58,4 +58,54 @@ button {
   background: #7f8c8d;
   color: white;
   margin-top: 10px;
+}
+
+/* ---- Formulario de crear evento ---- */
+#crear {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+#frmCrear label {
+  display: block;
+  margin: 10px 0;
+  color: #2c3e50;
+}
+
+#frmCrear input,
+#frmCrear select,
+#frmCrear textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+#frmCrear button {
+  background: #27ae60;
+  color: white;
+  margin-top: 10px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+#frmCrear button:hover {
+  background: #219150;
+}
+
+#outCrear {
+  background: #f6f6f6;
+  border: 1px dashed #ccc;
+  padding: 10px;
+  margin-top: 15px;
+  font-size: 0.9em;
+  white-space: pre-wrap;
 }

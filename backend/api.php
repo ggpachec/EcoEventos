@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 
 header('Content-Type: application/json; charset=utf-8');
 
-const DATA_FILE = __DIR__ . '/backend/eventos.json';
+const DATA_FILE = __DIR__ . '/eventos.json';
 
 function loadEventos(): array {
     if (!file_exists(DATA_FILE)) return [];

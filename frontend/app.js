@@ -1,4 +1,26 @@
-const API_URL = "http://localhost:8000/api.php?resource=eventos";
+const API_URL = "http://localhost:8000/backend/api.php?resource=eventos";
+const FILTER_URL = "http://localhost:8000/backend/filtrar_eventos.php";
+
+// Utilidades de fecha
+function dmyToYmd(dd_mm_yyyy) {
+  if (!dd_mm_yyyy) return "";
+  const [d,m,y] = dd_mm_yyyy.split("/");
+  if (!d || !m || !y) return "";
+  return `${y}-${m.padStart(2,"0")}-${d.padStart(2,"0")}`;
+}
+
+function getParam(name) {
+  const u = new URL(window.location.href);
+  return u.searchParams.get(name);
+}
+
+
+// Actualizar resumen de eventos
+function actualizarResumen(n, sinFiltros = false) {
+  const span = document.getElementById("resultadoResumen");
+  if (!span) return;
+  span.textContent = sinFiltros ? `Mostrando todos los eventos (${n})` : `Coincidencias: ${n}`;
+}
 
 // Cargar lista de eventos
 async function cargarEventos() {
@@ -6,25 +28,40 @@ async function cargarEventos() {
     const res = await fetch(API_URL);
     if (!res.ok) throw new Error("No se pudo cargar la lista");
     const data = await res.json();
-    const contenedor = document.getElementById("eventos");
-    if (!contenedor) return;
-    contenedor.innerHTML = "";
 
-    data.forEach((ev) => {
-      const div = document.createElement("div");
-      div.className = "evento";
-      div.innerHTML = `
-        <strong>${ev.titulo}</strong> - ${ev.fecha} en ${ev.lugar}
-        <br>
-        <button class="ver" onclick="verDetalle('${ev.id}')">Ver Detalle</button>
-        <button class="eliminar" onclick="eliminarEvento('${ev.id}')">Eliminar</button>
-      `;
-      contenedor.appendChild(div);
-    });
+    renderEventos(data);
+    actualizarResumen(data.length, true);
+    cargarCategoriasEnSelect(data);
+
   } catch (err) {
     console.error(err);
     alert("Error al cargar eventos");
   }
+}
+
+// Renderizar eventos
+function renderEventos(arr) {
+  const contenedor = document.getElementById("eventos");
+  if (!contenedor) return;
+  contenedor.innerHTML = "";
+
+  if (!arr || arr.length === 0) {
+    contenedor.innerHTML = `<div class="evento"><em>No hay eventos con ese filtro.</em></div>`;
+    return;
+  }
+
+  arr.forEach((ev) => {
+    const div = document.createElement("div");
+    div.className = "evento";
+    div.innerHTML = `
+      <strong>${ev.titulo}</strong> - ${ev.fecha} en ${ev.lugar}
+      <br>
+      <button class="ver" onclick="verDetalle('${ev.id}')">Ver Detalle</button>
+      <button class="editar" onclick="editarEvento('${ev.id}')">Editar</button>
+      <button class="eliminar" onclick="eliminarEvento('${ev.id}')">Eliminar</button>
+    `;
+    contenedor.appendChild(div);
+  });
 }
 
 // Ver detalle de evento
@@ -80,6 +117,69 @@ async function eliminarEvento(id) {
 function cerrarDetalle() {
   const panel = document.getElementById("detalleEvento");
   if (panel) panel.style.display = "none";
+}
+
+// Aplicar Filtros
+async function aplicarFiltros(ev) {
+  if (ev) ev.preventDefault();
+
+  const categoria = document.getElementById("filtroCategoria")?.value || "";
+  const desde = ymdToDmy(document.getElementById("filtroDesde")?.value || "");
+  const hasta = ymdToDmy(document.getElementById("filtroHasta")?.value || "");
+  const q = document.getElementById("filtroQ")?.value?.trim() || "";
+
+  const params = new URLSearchParams();
+  if (categoria) params.set("categoria", categoria);
+  if (desde) params.set("desde", desde);
+  if (hasta) params.set("hasta", hasta);
+  if (q) params.set("q", q);
+
+  const url = params.toString() ? `${FILTER_URL}?${params.toString()}` : FILTER_URL;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("No se pudo aplicar filtros");
+    const data = await res.json();
+
+    renderEventos(data);
+    actualizarResumen(data.length, !params.toString());
+  } catch (err) {
+    console.error(err);
+    alert("Error al filtrar");
+  }
+}
+
+//Limpiar Filtros
+function limpiarFiltros() {
+  const c = (id) => document.getElementById(id);
+  if (c("filtroCategoria")) c("filtroCategoria").value = "";
+  if (c("filtroDesde")) c("filtroDesde").value = "";
+  if (c("filtroHasta")) c("filtroHasta").value = "";
+  if (c("filtroQ")) c("filtroQ").value = "";
+  cargarEventos().catch(console.error);
+}
+
+// Cargar Select de HTML
+function cargarCategoriasEnSelect(eventos) {
+  const sel = document.getElementById("filtroCategoria");
+  if (!sel) return;
+
+  const cats = Array.from(new Set((eventos || []).map(e => e.categoria).filter(Boolean))).sort();
+
+  // Limpia las opciones previas, dejando "Todas" (value="")
+  sel.querySelectorAll("option:not([value=''])").forEach(o => o.remove());
+
+  cats.forEach(c => {
+    const op = document.createElement("option");
+    op.value = c;
+    op.textContent = c;
+    sel.appendChild(op);
+  });
+}
+
+// Editar Evento
+function editarEvento(id) {
+  window.location.href = `edit.html?id=${encodeURIComponent(id)}`;
 }
 
 // ----- CREAR EVENTO (POST) -----
@@ -147,6 +247,16 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     // Si NO estamos en create.html, cargar la lista (index.html)
     if (typeof cargarEventos === "function") cargarEventos();
+
+    // Si hay barra de filtros, enganchar eventos
+    const filtros = document.getElementById("barraFiltros");
+    if (filtros) {
+      document.getElementById("btnAplicar")?.addEventListener("click", aplicarFiltros);
+      document.getElementById("btnLimpiar")?.addEventListener("click", limpiarFiltros);
+      document.getElementById("filtroQ")?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") aplicarFiltros(e);
+      });
+    }
   }
 });
 // Inicializar

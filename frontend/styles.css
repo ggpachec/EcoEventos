@@ -35,6 +35,11 @@ button {
   color: white;
 }
 
+.editar {
+  background: #4fc73f;
+  color: white;
+}
+
 #detalleEvento {
   margin-top: 20px;
   padding: 20px;
@@ -55,7 +60,7 @@ button {
 }
 
 .cerrar {
-  background: #7f8c8d;
+  background: #e62121;
   color: white;
   margin-top: 10px;
 }

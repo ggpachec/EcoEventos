@@ -13,6 +13,42 @@
     </a>
   </header>
 
+  <section id="barraFiltros" class="filtros">
+    <div class="fila">
+      <label>
+        Categoría
+        <select id="filtroCategoria">
+          <option value="">Todas</option>
+          <!-- Se llena dinámicamente desde app.js -->
+        </select>
+      </label>
+
+      <label>
+        Desde
+        <input type="date" id="filtroDesde" />
+      </label>
+
+      <label>
+        Hasta
+        <input type="date" id="filtroHasta" />
+      </label>
+
+      <label class="grow">
+        Buscar (título o lugar)
+        <input type="search" id="filtroQ" placeholder="Ej: taller, parque, museo..." />
+      </label>
+
+      <div class="acciones">
+        <button id="btnAplicar" class="ver">Aplicar</button>
+        <button id="btnLimpiar" class="eliminar" type="button">Limpiar</button>
+      </div>
+    </div>
+
+    <div class="resumen">
+      <span id="resultadoResumen">Mostrando todos los eventos</span>
+    </div>
+  </section>
+
   <h2>Lista de Eventos</h2>
   <div id="eventos"></div>
 

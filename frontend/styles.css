@@ -1,116 +1,201 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  background: #f9f9f9;
+/* Paleta y base */
+:root{
+  --bg: #0f172a;
+  --bg-2:#111827;
+  --primary:#10b981;
+  --primary-600:#0ea371;
+  --danger:#ef4444;
+  --danger-600:#dc2626;
+  --muted:#6b7280;
+  --card:#ffffff;
+  --stroke:#e5e7eb;
+  --shadow: 0 10px 20px rgba(2,6,23,.06);
 }
 
-h1 {
-  color: #2c3e50;
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  margin:0;
+  background:#f6f7fb;
+  color:#111827;
 }
 
-.evento {
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+.container{
+  max-width:1240px; 
+  margin:0 auto;
+  padding:0 24px;
 }
 
-button {
-  margin: 5px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+/* Topbar */
+.topbar{
+  background:#0b1220;
+  color:#fff;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.topbar .container{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.brand .logo{font-size:20px}
+.brand-name{letter-spacing:.2px}
+
+/* Hero */
+.hero{
+  background: radial-gradient(1200px 420px at 50% -150px, #1f2937, #0b1220);
+  color:#fff;
+  padding:48px 0 56px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hero h1{font-size:28px; margin:0 0 8px; font-weight:800}
+.hero p{margin:0;color:#cbd5e1}
+
+.layout{
+  display:block;          
+  padding:28px 0 36px;
 }
 
-.ver {
-  background: #3498db;
-  color: white;
+/* Hero layout con imagen */
+.hero-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:32px;
+}
+.hero-text{
+  flex:1;
+}
+.hero-img{
+  width:120px;
+  height:auto;
+}
+@media(max-width: 768px){
+  .hero-inner{flex-direction:column;text-align:center}
+  .hero-img{margin-top:16px}
 }
 
-.eliminar {
-  background: #e74c3c;
-  color: white;
+/* Tarjetas genéricas */
+.card{
+  background:var(--card);
+  border:1px solid var(--stroke);
+  border-radius:14px;
+  box-shadow: var(--shadow);
+  padding:18px;
 }
 
-.editar {
-  background: #4fc73f;
-  color: white;
+.section-title{
+  font-size:18px;
+  margin:0 0 14px;
+  color:#111827;
 }
 
-#detalleEvento {
-  margin-top: 20px;
-  padding: 20px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  display: none;
+/* Filtros  */
+.filtros{ margin-bottom:18px; }      
+.filtros .fila{
+  display:grid;
+  grid-template-columns: 220px 180px 180px 1fr auto; 
+  gap:12px;
+  align-items:end;
+}
+.filtros label{
+  display:flex;
+  flex-direction:column;
+  font-size:13px;
+  color:#374151;
+  gap:6px;
+}
+.filtros select,
+.filtros input[type="date"],
+.filtros input[type="search"]{
+  border:1px solid var(--stroke);
+  border-radius:10px;
+  padding:10px 12px;
+  background:#fff;
+  outline:none;
+}
+.filtros .acciones{display:flex; gap:8px; align-items:center}
+.filtros .resumen{margin-top:10px; color:#374151; font-size:13px}
+
+/* Botones */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  border:none; border-radius:10px;
+  padding:10px 14px; cursor:pointer; font-weight:600; letter-spacing:.2px;
+}
+.btn-primary{ background:var(--primary); color:#fff }
+.btn-primary:hover{ background:var(--primary-600) }
+.btn-danger{ background:var(--danger); color:#fff }
+.btn-danger:hover{ background:var(--danger-600) }
+.btn-neutral{ background:#e5e7eb; color:#111827 }
+.btn-neutral:hover{ background:#d1d5db }
+
+/* ===== Lista de eventos en grilla ancha ===== */
+.eventos-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); 
+  gap:16px;
 }
 
-#detalleEvento h2 {
-  margin-top: 0;
-  color: #2c3e50;
+/* Tarjeta de evento  */
+.evento{
+  background:#fff;
+  border:1px solid var(--stroke);
+  border-radius:14px;
+  padding:14px 16px;
+  box-shadow: var(--shadow);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.evento:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(2,6,23,.08);
+  border-color:#dbe1ea;
+}
+.evento strong{display:block; font-size:16px; margin-bottom:4px}
+.evento .meta{color:#4b5563; font-size:13px}
+
+/* Botones */
+button{ margin:6px 6px 0 0; padding:8px 12px; border:none; border-radius:10px; cursor:pointer; font-weight:600 }
+.ver{ background:var(--primary); color:#fff }
+.ver:hover{ background:var(--primary-600) }
+.eliminar{ background:var(--danger); color:#fff }
+.eliminar:hover{ background:var(--danger-600) }
+.editar{ background:#3b82f6; color:#fff }
+.editar:hover{ background:#2563eb }
+
+/* Detalle */
+#detalleEvento{
+  margin:0 auto 40px;
+  max-width:1240px;
+}
+#detalleEvento p{ margin:6px 0; }
+
+/* ===== Responsivo ===== */
+@media (max-width: 1200px){
+  .eventos-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .filtros .fila{
+    grid-template-columns: 200px 1fr 1fr 1.2fr auto; /* se adaptan fechas/buscador */
+  }
+}
+@media (max-width: 820px){
+  .eventos-grid{ grid-template-columns: 1fr; }
+  .filtros .fila{ grid-template-columns: 1fr; }
 }
 
-#detalleEvento p {
-  margin: 6px 0;
+/* --------- creación --------- */
+#crear{
+  background:#fff; border:1px solid var(--stroke);
+  border-radius:14px; box-shadow: var(--shadow);
+  padding:20px; margin-bottom:20px;
 }
-
-.cerrar {
-  background: #e62121;
-  color: white;
-  margin-top: 10px;
+#frmCrear label{ display:block; margin:10px 0; color:#111827 }
+#frmCrear input, #frmCrear select, #frmCrear textarea{
+  width:100%; padding:10px 12px; margin-top:6px; border:1px solid var(--stroke); border-radius:10px;
 }
-
-/* ---- Formulario de crear evento ---- */
-#crear {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-#frmCrear label {
-  display: block;
-  margin: 10px 0;
-  color: #2c3e50;
-}
-
-#frmCrear input,
-#frmCrear select,
-#frmCrear textarea {
-  width: 100%;
-  padding: 8px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-#frmCrear button {
-  background: #27ae60;
-  color: white;
-  margin-top: 10px;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-#frmCrear button:hover {
-  background: #219150;
-}
-
-#outCrear {
-  background: #f6f6f6;
-  border: 1px dashed #ccc;
-  padding: 10px;
-  margin-top: 15px;
-  font-size: 0.9em;
-  white-space: pre-wrap;
+#frmCrear button{ background:var(--primary); color:#fff; margin-top:10px; padding:10px 16px; border-radius:10px }
+#frmCrear button:hover{ background:var(--primary-600) }
+#outCrear{
+  background:#f3f4f6; border:1px dashed #cbd5e1; padding:10px; margin-top:12px;
+  font-size:.9em; white-space:pre-wrap;
 }

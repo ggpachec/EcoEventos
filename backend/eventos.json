@@ -56,14 +56,14 @@
         "creado_en": "2025-08-09T21:09:40+00:00"
     },
     {
-        "id": "ev_68a17b1a2194d1.03911117",
+        "id": "ev_68a7e6da5bfda5.38764123",
         "titulo": "Evento Prueba",
-        "categoria": "Reciclaje",
-        "fecha": "17/08/2025",
+        "categoria": "Charla",
+        "fecha": "15/09/2025",
         "hora_inicio": "08:00 AM",
-        "hora_fin": "12:00 PM",
-        "lugar": "guayaquil",
-        "descripcion": "descripcion prueba",
-        "creado_en": "2025-08-17T06:47:54+00:00"
+        "hora_fin": "09:00 AM",
+        "lugar": "Guayaquil",
+        "descripcion": "evento prueba",
+        "creado_en": "2025-08-22T03:41:14+00:00"
     }
 ]

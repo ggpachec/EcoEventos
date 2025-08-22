@@ -1,68 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>EcoEventos - Gestión de Eventos</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- Tipografía limpia -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-    <h1>EcoEventos - Gestión de Eventos</h1>
-    <a href="create.html">
-      <button class="ver" style="padding:8px 14px;">Crear Evento</button>
-    </a>
+  <!-- Barra superior -->
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">
+        <span class="logo">🌿</span>
+        <span class="brand-name">EcoEventos</span>
+      </div>
+      <a href="create.html" class="btn btn-primary">Crear Evento</a>
+    </div>
   </header>
 
-  <section id="barraFiltros" class="filtros">
-    <div class="fila">
-      <label>
-        Categoría
-        <select id="filtroCategoria">
-          <option value="">Todas</option>
-          <!-- Se llena dinámicamente desde app.js -->
-        </select>
-      </label>
-
-      <label>
-        Desde
-        <input type="date" id="filtroDesde" />
-      </label>
-
-      <label>
-        Hasta
-        <input type="date" id="filtroHasta" />
-      </label>
-
-      <label class="grow">
-        Buscar (título o lugar)
-        <input type="search" id="filtroQ" placeholder="Ej: taller, parque, museo..." />
-      </label>
-
-      <div class="acciones">
-        <button id="btnAplicar" class="ver">Aplicar</button>
-        <button id="btnLimpiar" class="eliminar" type="button">Limpiar</button>
+  <!-- Hero con el mensaje + imagen -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h1>Conecta con tu comunidad y actúa por el planeta</h1>
+        <p>Encuentra, crea y gestiona actividades ambientales en tu ciudad.</p>
       </div>
-    </div>
-
-    <div class="resumen">
-      <span id="resultadoResumen">Mostrando todos los eventos</span>
+      <img src="https://cdn-icons-png.flaticon.com/512/3047/3047867.png" alt="Eco Icon" class="hero-img">
     </div>
   </section>
 
-  <h2>Lista de Eventos</h2>
-  <div id="eventos"></div>
 
-  <!-- Tarjeta para mostrar detalle -->
-  <div id="detalleEvento" style="display:none;">
-    <h2>Detalle del Evento</h2>
+  <main class="container layout">
+    <!-- Filtros (no se cambia estructura ni IDs) -->
+    <section id="barraFiltros" class="filtros card">
+      <h2 class="section-title">Filtros</h2>
+
+      <div class="fila">
+        <label>
+          Categoría
+          <select id="filtroCategoria">
+            <option value="">Todas</option>
+            <!-- Se llena dinámicamente desde app.js -->
+          </select>
+        </label>
+
+        <label>
+          Desde
+          <input type="date" id="filtroDesde" />
+        </label>
+
+        <label>
+          Hasta
+          <input type="date" id="filtroHasta" />
+        </label>
+
+        <label class="grow">
+          Buscar (título o lugar)
+          <input type="search" id="filtroQ" placeholder="Ej: taller, parque, museo..." />
+        </label>
+
+        <div class="acciones">
+          <button id="btnAplicar" class="btn btn-primary">Aplicar</button>
+          <button id="btnLimpiar" class="btn btn-danger" type="button">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="resumen">
+        <span id="resultadoResumen">Mostrando todos los eventos</span>
+      </div>
+    </section>
+
+    <!-- Lista de eventos -->
+    <section class="content">
+      <h2 class="section-title">Lista de Eventos</h2>
+      <div id="eventos" class="eventos-grid"></div>
+    </section>
+  </main>
+
+  <!-- Detalle (IDs intactos) -->
+  <section id="detalleEvento" class="card" style="display:none;">
+    <h2 class="section-title">Detalle del Evento</h2>
     <p><strong>Título:</strong> <span id="detTitulo"></span></p>
     <p><strong>Categoría:</strong> <span id="detCategoria"></span></p>
     <p><strong>Fecha:</strong> <span id="detFecha"></span></p>
     <p><strong>Hora:</strong> <span id="detHora"></span></p>
     <p><strong>Lugar:</strong> <span id="detLugar"></span></p>
     <p><strong>Descripción:</strong> <span id="detDescripcion"></span></p>
-    <button class="cerrar" onclick="cerrarDetalle()">Cerrar</button>
-  </div>
+    <button class="btn btn-neutral" onclick="cerrarDetalle()">Cerrar</button>
+  </section>
 
   <script src="app.js"></script>
 </body>

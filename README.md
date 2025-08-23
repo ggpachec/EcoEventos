@@ -4,6 +4,8 @@
 Aplicación web para organizar eventos sostenibles comunitarios.  
 **Stack elegido:** Frontend (HTML + CSS + JavaScript) y Backend (PHP 8 + JSON como almacenamiento).
 
+<img width="1832" height="886" alt="image" src="https://github.com/user-attachments/assets/977b0acd-03f3-4631-acd0-6c9e5946d94d" />
+
 ---
 
 ## 1) Estructura del proyecto

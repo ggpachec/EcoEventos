@@ -199,3 +199,20 @@ button{ margin:6px 6px 0 0; padding:8px 12px; border:none; border-radius:10px; c
   background:#f3f4f6; border:1px dashed #cbd5e1; padding:10px; margin-top:12px;
   font-size:.9em; white-space:pre-wrap;
 }
+
+/* --------- edición --------- */
+#editar{
+  background:#fff; border:1px solid var(--stroke);
+  border-radius:14px; box-shadow: var(--shadow);
+  padding:20px; margin-bottom:20px;
+}
+#frmEditar label{ display:block; margin:10px 0; color:#111827 }
+#frmEditar input, #frmEditar select, #frmEditar textarea{
+  width:100%; padding:10px 12px; margin-top:6px; border:1px solid var(--stroke); border-radius:10px;
+}
+#frmEditar button{ background:var(--primary); color:#fff; margin-top:10px; padding:10px 16px; border-radius:10px }
+#frmEditar button:hover{ background:var(--primary-600) }
+#outEditar{
+  background:#f3f4f6; border:1px dashed #cbd5e1; padding:10px; margin-top:12px;
+  font-size:.9em; white-space:pre-wrap;
+}

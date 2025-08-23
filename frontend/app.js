@@ -2,6 +2,7 @@ const API_URL = "http://localhost:8000/backend/api.php?resource=eventos";
 const FILTER_URL = "http://localhost:8000/backend/filtrar_eventos.php";
 const LIST_URL = "http://localhost:8000/backend/listar_eventos.php";
 const CREATE_URL = "http://localhost:8000/backend/crear_evento.php";
+const EDITAR_URL = "http://localhost:8000/backend/editar_evento.php";
 
 // Utilidades de fecha
 function dmyToYmd(dd_mm_yyyy) {
@@ -31,6 +32,21 @@ function to12h(hhmm) {
   const h12  = ((H % 12) || 12).toString().padStart(2,"0");
   const mm   = M.toString().padStart(2,"0");
   return `${h12}:${mm} ${ampm}`;
+}
+
+function to24h(hhmm_ampm) {
+  if (!hhmm_ampm) return "";
+  const m = hhmm_ampm.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!m) return hhmm_ampm; // si ya viene "HH:MM" 24h, lo devolvemos tal cual
+  let h = parseInt(m[1], 10);
+  const mm = m[2];
+  const ap = m[3].toUpperCase();
+  if (ap === "AM") {
+    if (h === 12) h = 0;
+  } else { // PM
+    if (h !== 12) h += 12;
+  }
+  return `${String(h).padStart(2,"0")}:${mm}`;
 }
 
 
@@ -199,10 +215,13 @@ function cargarCategoriasEnSelect(eventos) {
 function editarEvento(id) {
   window.location.href = `edit.html?id=${encodeURIComponent(id)}`;
 }
+  
 
 // ----- CREAR EVENTO (POST) -----
 document.addEventListener("DOMContentLoaded", () => {
   const frm = document.getElementById("frmCrear");
+  const frmEditar = document.getElementById("frmEditar");
+
   if (frm) {
     document.getElementById("btnCancelar")?.addEventListener("click", () => {
       if (history.length > 1) history.back();
@@ -251,6 +270,10 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Error de red al crear el evento");
       }
     });
+  } else if (frmEditar) {
+    // edit.html
+    initEditar();
+    return;
   } else {
     // Si NO estamos en create.html, cargar la lista (index.html)
     if (typeof cargarEventos === "function") cargarEventos();
@@ -266,3 +289,110 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+// ----- EDITAR EVENTO (POST) -----
+async function initEditar() {
+  const frm = document.getElementById("frmEditar");
+  if (!frm) return; // no estamos en edit.html
+
+  // Cancelar
+  document.getElementById("btnCancelar")?.addEventListener("click", () => {
+    if (history.length > 1) history.back();
+    else window.location.href = "index.html";
+  });
+
+  // 1) obtener id de la URL
+  const id = getParam("id");
+  if (!id) {
+    alert("Falta el id del evento");
+    window.location.href = "index.html";
+    return;
+  }
+
+  // 2) traer datos del evento
+  try {
+    const res = await fetch(`${API_URL}&id=${encodeURIComponent(id)}`);
+    if (!res.ok) throw new Error("No se pudo cargar el evento");
+    const ev = await res.json();
+
+    // 3) rellenar formulario
+    document.getElementById("evtId").value      = ev.id ?? id;
+    document.getElementById("eTitulo").value    = ev.titulo ?? "";
+    // categoría: si viene texto libre, lo ponemos como value; si no está en la lista, igual se muestra
+    document.getElementById("eCategoria").value = (ev.categoria ?? ev.tipo ?? "") || "";
+
+    // fecha: si viene DD/MM/YYYY → convertir a YYYY-MM-DD
+    const ymd = /^\d{2}\/\d{2}\/\d{4}$/.test(ev.fecha) ? dmyToYmd(ev.fecha) : (ev.fecha ?? "");
+    document.getElementById("eFecha").value     = ymd;
+
+    // horas: si se guardaron como "hh:mm AM/PM", convertir a "HH:MM"
+    document.getElementById("eHoraIni").value   = to24h(ev.hora_inicio ?? "");
+    document.getElementById("eHoraFin").value   = to24h(ev.hora_fin ?? "");
+    document.getElementById("eLugar").value     = ev.lugar ?? "";
+    document.getElementById("eDescripcion").value = ev.descripcion ?? "";
+  } catch (err) {
+    console.error(err);
+    alert("Error al cargar datos para edición");
+    window.location.href = "index.html";
+    return;
+  }
+
+  // 4) enviar cambios → tu endpoint existente /backend/editar_evento.php
+  frm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      id: document.getElementById("evtId").value,
+      titulo: document.getElementById("eTitulo").value.trim(),
+      categoria: document.getElementById("eCategoria").value.trim(),
+      fecha: ymdToDmy(document.getElementById("eFecha").value),   // YYYY-MM-DD -> DD/MM/YYYY
+      hora_inicio: to12h(document.getElementById("eHoraIni").value), // 24h -> 12h AM/PM (igual que create)
+      hora_fin: to12h(document.getElementById("eHoraFin").value),
+      lugar: document.getElementById("eLugar").value.trim(),
+      descripcion: document.getElementById("eDescripcion").value.trim(),
+    };
+
+    // validación mínima
+    const req = ["id","titulo","categoria","fecha","hora_inicio","hora_fin","lugar","descripcion"];
+    for (const k of req) {
+      if (!payload[k] || String(payload[k]).trim() === "") {
+        alert("Completa todos los campos obligatorios (*)");
+        return;
+      }
+    }
+
+    // opcional: validar horas
+    // if (document.getElementById("eHoraIni").value > document.getElementById("eHoraFin").value) { ... }
+
+    try {
+      // Tu PHP `editar_evento.php` acepta POST. Enviamos JSON:
+      let res = await fetch(EDITAR_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      // Si tu PHP espera $_POST (no JSON), hacemos fallback con FormData:
+      let data;
+      if (!res.ok) {
+        const fd = new FormData();
+        Object.entries(payload).forEach(([k,v]) => fd.append(k, v));
+        res = await fetch(EDITAR_URL, { method: "POST", body: fd });
+      }
+      data = await res.json().catch(() => ({}));
+
+      document.getElementById("outEditar") && (document.getElementById("outEditar").textContent = JSON.stringify(data, null, 2));
+
+      if (!res.ok || data.error) {
+        alert("No se pudo actualizar: " + (data.mensaje || data.error || "ver consola"));
+        return;
+      }
+
+      alert("Evento actualizado");
+      window.location.href = "index.html";
+    } catch (err) {
+      console.error(err);
+      alert("Error de red al actualizar");
+    }
+  });
+}

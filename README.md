@@ -66,7 +66,7 @@ EcoEventos/
 > Base: `http://localhost:8000`
 
 ### Listar / Detalle / Eliminar
-- **GET** `/backend/filtrar_eventos.php` → lista completa (array JSON)
+- **GET** `/backend/listar_eventos.php` → lista completa (array JSON)
 - **GET** `/backend/api.php?resource=eventos&id={ID}` → detalle (objeto JSON)
 - **DELETE** `/backend/api.php?resource=eventos&id={ID}` → elimina el evento
 

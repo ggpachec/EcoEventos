@@ -37,7 +37,7 @@ function to12h(hhmm) {
 function to24h(hhmm_ampm) {
   if (!hhmm_ampm) return "";
   const m = hhmm_ampm.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-  if (!m) return hhmm_ampm; // si ya viene "HH:MM" 24h, lo devolvemos tal cual
+  if (!m) return hhmm_ampm; // si ya viene "HH:MM" 24h, se devuelve tal cual
   let h = parseInt(m[1], 10);
   const mm = m[2];
   const ap = m[3].toUpperCase();
@@ -365,14 +365,14 @@ async function initEditar() {
     // if (document.getElementById("eHoraIni").value > document.getElementById("eHoraFin").value) { ... }
 
     try {
-      // Tu PHP `editar_evento.php` acepta POST. Enviamos JSON:
+      // PHP `editar_evento.php` acepta POST. Enviamos JSON:
       let res = await fetch(EDITAR_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      // Si tu PHP espera $_POST (no JSON), hacemos fallback con FormData:
+      // Si PHP espera $_POST (no JSON), hacemos fallback con FormData:
       let data;
       if (!res.ok) {
         const fd = new FormData();
